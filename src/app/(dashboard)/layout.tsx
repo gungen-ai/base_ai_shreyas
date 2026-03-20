@@ -56,7 +56,7 @@ export default async function DashboardLayout({
 
         {/* User section */}
         <div className="px-6 py-4 border-t border-gray-200 flex items-center gap-3">
-          <UserButton afterSignOutUrl="/sign-in" />
+          <UserButton />
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-900">
               {user.firstName} {user.lastName}
