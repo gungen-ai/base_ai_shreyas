@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 type KBEntry = {
   id: string
@@ -32,38 +32,25 @@ export default function KBPage() {
     answer: '',
   })
 
-  //useEffect(() => {
-  //  fetchEntries()
-  //}, [])
-
-  const fetchEntries = async () => {
+  const fetchEntries = useCallback(async () => {
     const res = await fetch('/api/kb')
     const data = await res.json()
     setEntries(data.entries || [])
     setLoading(false)
-  }
+  }, [])
 
   useEffect(() => {
     fetchEntries()
-  }, [])
-
-  async function fetchEntries() {
-    const res = await fetch('/api/kb')
-    const data = await res.json()
-    setEntries(data.entries || [])
-    setLoading(false)
-  }
+  }, [fetchEntries])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitting(true)
-
     await fetch('/api/kb', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
-
     setForm({ category: 'Shipping', question: '', answer: '' })
     setShowForm(false)
     setSubmitting(false)
@@ -92,7 +79,6 @@ export default function KBPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Knowledge Base</h1>
@@ -108,29 +94,22 @@ export default function KBPage() {
         </button>
       </div>
 
-      {/* Add entry form */}
       {showForm && (
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">New KB Entry</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
               <select
                 value={form.category}
                 onChange={e => setForm({ ...form, category: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                {CATEGORIES.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Question
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
               <input
                 type="text"
                 required
@@ -141,13 +120,11 @@ export default function KBPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Answer
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
               <textarea
                 required
                 rows={4}
-                placeholder="e.g. We ship within 3-5 business days via standard shipping..."
+                placeholder="e.g. We ship within 3-5 business days..."
                 value={form.answer}
                 onChange={e => setForm({ ...form, answer: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -173,7 +150,6 @@ export default function KBPage() {
         </div>
       )}
 
-      {/* Entries table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400">Loading...</div>
@@ -181,9 +157,7 @@ export default function KBPage() {
           <div className="p-12 text-center">
             <span className="text-4xl">📚</span>
             <p className="text-gray-900 font-medium mt-4">No KB entries yet</p>
-            <p className="text-gray-500 text-sm mt-1">
-              Click Add Entry to create your first knowledge base article
-            </p>
+            <p className="text-gray-500 text-sm mt-1">Click Add Entry to create your first knowledge base article</p>
           </div>
         ) : (
           <table className="w-full">
@@ -215,27 +189,12 @@ export default function KBPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       {entry.status === 'draft' && (
-                        <button
-                          onClick={() => updateStatus(entry.id, 'active')}
-                          className="text-xs text-green-600 hover:text-green-800 font-medium"
-                        >
-                          Activate
-                        </button>
+                        <button onClick={() => updateStatus(entry.id, 'active')} className="text-xs text-green-600 hover:text-green-800 font-medium">Activate</button>
                       )}
                       {entry.status === 'active' && (
-                        <button
-                          onClick={() => updateStatus(entry.id, 'archived')}
-                          className="text-xs text-gray-500 hover:text-gray-700 font-medium"
-                        >
-                          Archive
-                        </button>
+                        <button onClick={() => updateStatus(entry.id, 'archived')} className="text-xs text-gray-500 hover:text-gray-700 font-medium">Archive</button>
                       )}
-                      <button
-                        onClick={() => deleteEntry(entry.id)}
-                        className="text-xs text-red-500 hover:text-red-700 font-medium"
-                      >
-                        Delete
-                      </button>
+                      <button onClick={() => deleteEntry(entry.id)} className="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
                     </div>
                   </td>
                 </tr>
