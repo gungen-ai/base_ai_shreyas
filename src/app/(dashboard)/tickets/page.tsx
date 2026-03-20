@@ -20,10 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   closed: 'bg-gray-100 text-gray-500',
 }
 
-const CATEGORIES = [
-  'Shipping', 'Returns', 'Refunds',
-  'Product FAQs', 'Order Issues', 'General',
-]
+const CATEGORIES = ['Shipping','Returns','Refunds','Product FAQs','Order Issues','General']
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([])
@@ -41,24 +38,12 @@ export default function TicketsPage() {
     setLoading(false)
   }, [])
 
-  useEffect(() => {
-    fetchTickets()
-  }, [fetchTickets])
+  useEffect(() => { fetchTickets() }, [fetchTickets])
 
   async function resolveTicket() {
     if (!selected || !answer.trim()) return
     setSubmitting(true)
-    await fetch('/api/tickets', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: selected.id,
-        draftedAnswer: answer,
-        status: 'resolved',
-        addToKb,
-        category,
-      }),
-    })
+    await fetch('/api/tickets', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: selected.id, draftedAnswer: answer, status: 'resolved', addToKb, category }) })
     setSelected(null)
     setAnswer('')
     setAddToKb(false)
@@ -74,11 +59,8 @@ export default function TicketsPage() {
       <div className="flex-1">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Tickets</h1>
-          <p className="text-gray-500 mt-1">
-            {openTickets.length} open · {resolvedTickets.length} resolved
-          </p>
+          <p className="text-gray-500 mt-1">{openTickets.length} open · {resolvedTickets.length} resolved</p>
         </div>
-
         {loading ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">Loading...</div>
         ) : tickets.length === 0 ? (
@@ -93,11 +75,7 @@ export default function TicketsPage() {
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase mb-2 px-1">Open</p>
                 {openTickets.map(ticket => (
-                  <div
-                    key={ticket.id}
-                    onClick={() => { setSelected(ticket); setAnswer(ticket.draftedAnswer || '') }}
-                    className={`bg-white rounded-xl border p-4 cursor-pointer transition-colors mb-2 ${selected?.id === ticket.id ? 'border-indigo-400 ring-1 ring-indigo-400' : 'border-gray-200 hover:border-gray-300'}`}
-                  >
+                  <div key={ticket.id} onClick={() { setSelected(ticket); setAnswer(ticket.draftedAnswer || '') }} className={`bg-white rounded-xl border p-4 cursor-pointer transition-colors mb-2 ${selected?.id === ticket.id ? 'border-indigo-400 ring-1 ring-indigo-400' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div className="flex items-start justify-between gap-3">
                       <p className="text-sm font-medium text-gray-900">{ticket.rawQuery}</p>
                       <span className={`text-xs px-2 py-1 rounded-full shrink-0 font-medium ${STATUS_COLORS[ticket.status]}`}>{ticket.status}</span>
@@ -114,11 +92,7 @@ export default function TicketsPage() {
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase mb-2 px-1 mt-4">Resolved</p>
                 {resolvedTickets.map(ticket => (
-                  <div
-                    key={ticket.id}
-                    onClick={() => { setSelected(ticket); setAnswer(ticket.draftedAnswer || '') }}
-                    className={`bg-white rounded-xl border p-4 cursor-pointer transition-colors mb-2 opacity-60 ${selected?.id === ticket.id ? 'border-indigo-400 ring-1 ring-indigo-400' : 'border-gray-200 hover:border-gray-300'}`}
-                  >
+                  <div key={ticket.id} onClick={() => { setSelected(ticket); setAnswer(ticket.draftedAnswer || '') }} className={`bg-white rounded-xl border p-4 cursor-pointer transition-colors mb-2 opacity-60 ${selected?.id === ticket.id ? 'border-indigo-400 ring-1 ring-indigo-400' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div className="flex items-start justify-between gap-3">
                       <p className="text-sm font-medium text-gray-900">{ticket.rawQuery}</p>
                       <span className={`text-xs px-2 py-1 rounded-full shrink-0 font-medium ${STATUS_COLORS[ticket.status]}`}>{ticket.status}</span>
@@ -130,7 +104,6 @@ export default function TicketsPage() {
           </div>
         )}
       </div>
-
       {selected && (
         <div className="w-96 shrink-0">
           <div className="bg-white rounded-xl border border-gray-200 p-6 sticky top-8">
@@ -142,14 +115,7 @@ export default function TicketsPage() {
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">Your answer</label>
-              <textarea
-                rows={5}
-                value={answer}
-                onChange={e => setAnswer(e.target.value)}
-                placeholder="Write your answer to the customer..."
-                disabled={selected.status === 'resolved'}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50 disabled:text-gray-500"
-              />
+              <textarea rows={5} value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Write your answer to the customer..." disabled={selected.status === 'resolved'} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50 disabled:text-gray-500" />
             </div>
             {selected.status !== 'resolved' && (
               <div className="mb-4">
@@ -159,11 +125,7 @@ export default function TicketsPage() {
                 </label>
                 {addToKb && (
                   <div className="mt-2">
-                    <select
-                      value={category}
-                      onChange={e => setCategory(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
+                    <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                       {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
@@ -172,26 +134,13 @@ export default function TicketsPage() {
             )}
             {selected.status !== 'resolved' ? (
               <div className="flex gap-2">
-                <button
-                  onClick={resolveTicket}
-                  disabled={!answer.trim() || submitting}
-                  className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-                >
-                  {submitting ? 'Saving...' : 'Resolve ticket'}
-                </button>
-                <button
-                  onClick={() => setSelected(null)}
-                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
+                <button onClick={resolveTicket} disabled={!answer.trim() || submitting} className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors">{submitting ? 'Saving...' : 'Resolve ticket'}</button>
+                <button onClick={() => setSelected(null)} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">Cancel</button>
               </div>
             ) : (
               <div className="bg-green-50 rounded-lg p-3 text-center">
                 <p className="text-sm text-green-700 font-medium">Resolved</p>
-                {selected.resolvedAt && (
-                  <p className="text-xs text-green-600 mt-1">{new Date(selected.resolvedAt).toLocaleDateString()}</p>
-                )}
+                {selected.resolvedAt && <p className="text-xs text-green-600 mt-1">{new Date(selected.resolvedAt).toLocaleDateString()}</p>}
               </div>
             )}
           </div>
