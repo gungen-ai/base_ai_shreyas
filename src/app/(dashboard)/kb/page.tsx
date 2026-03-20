@@ -32,6 +32,17 @@ export default function KBPage() {
     answer: '',
   })
 
+  //useEffect(() => {
+  //  fetchEntries()
+  //}, [])
+
+  const fetchEntries = async () => {
+    const res = await fetch('/api/kb')
+    const data = await res.json()
+    setEntries(data.entries || [])
+    setLoading(false)
+  }
+
   useEffect(() => {
     fetchEntries()
   }, [])
@@ -123,7 +134,7 @@ export default function KBPage() {
               <input
                 type="text"
                 required
-                placeholder="e.g. How long does shipping take?"
+                placeholder="e.g. How long does shipping take"
                 value={form.question}
                 onChange={e => setForm({ ...form, question: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -171,7 +182,7 @@ export default function KBPage() {
             <span className="text-4xl">📚</span>
             <p className="text-gray-900 font-medium mt-4">No KB entries yet</p>
             <p className="text-gray-500 text-sm mt-1">
-              Click "Add Entry" to create your first knowledge base article
+              Click Add Entry to create your first knowledge base article
             </p>
           </div>
         ) : (

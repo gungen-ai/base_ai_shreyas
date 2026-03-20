@@ -11,7 +11,7 @@ export default async function DashboardPage() {
           Welcome back, {user?.firstName} 👋
         </h1>
         <p className="text-gray-500 mt-1">
-          Here's an overview of your knowledge base
+          Here is an overview of your knowledge base
         </p>
       </div>
 

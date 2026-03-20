@@ -94,7 +94,7 @@ function BillingContent() {
       {canceled && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
           <p className="text-amber-800 font-medium">Upgrade canceled</p>
-          <p className="text-amber-700 text-sm mt-1">You're still on the Free plan.</p>
+          <p className="text-amber-700 text-sm mt-1">You are still on the Free plan.</p>
         </div>
       )}
 

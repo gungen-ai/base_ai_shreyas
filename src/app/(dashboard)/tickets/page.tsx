@@ -34,6 +34,17 @@ export default function TicketsPage() {
   const [category, setCategory] = useState('General')
   const [submitting, setSubmitting] = useState(false)
 
+  //useEffect(() => {
+  //  fetchTickets()
+  //}, [])
+
+  const fetchTickets = async () => {
+    const res = await fetch('/api/tickets')
+    const data = await res.json()
+    setTickets(data.tickets || [])
+    setLoading(false)
+  }
+
   useEffect(() => {
     fetchTickets()
   }, [])
@@ -91,7 +102,7 @@ export default function TicketsPage() {
             <span className="text-4xl">🎫</span>
             <p className="text-gray-900 font-medium mt-4">No tickets yet</p>
             <p className="text-gray-500 text-sm mt-1">
-              Tickets are created automatically when the AI can't answer a question
+              Tickets are created automatically when the AI cannot answer a question
             </p>
           </div>
         ) : (
