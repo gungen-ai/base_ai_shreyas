@@ -2,7 +2,6 @@ import Link from 'next/link'
 
 const settingsNav = [
   { href: '/settings/embed', label: 'Embed' },
-  { href: '/settings/billing', label: 'Billing' },
 ]
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
