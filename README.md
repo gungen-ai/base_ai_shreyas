@@ -21,10 +21,11 @@ Admin portal for SignalWave customer support, powered by base_ai.
 
 ### Supabase
 
-1. Go to [supabase.com](https://supabase.com) and create a new project
-2. Once the project is ready, go to **Project Settings → Database → Connection string → URI**
-3. Copy the URI and replace `[YOUR-PASSWORD]` with your database password
-4. This is your `DATABASE_URL`
+If you already have a Supabase project, you can use it directly — no need to create a new one. Just get the connection string from **Project Settings → Database → Connection string → URI** and use that as your `DATABASE_URL`. Running `drizzle-kit push` will only add new tables and will not affect your existing data.
+
+If you don't have a Supabase project yet, create one at [supabase.com](https://supabase.com).
+
+In either case, replace `[YOUR-PASSWORD]` in the connection string URI with your database password.
 
 ### Clerk
 
