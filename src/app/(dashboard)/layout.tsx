@@ -47,10 +47,10 @@ export default async function DashboardLayout({
             <span>🎫</span> Tickets
           </Link>
           <Link
-            href="/billing"
+            href="/settings/embed"
             className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
           >
-            <span>💳</span> Billing
+            <span>⚙️</span> Settings
           </Link>
         </nav>
 

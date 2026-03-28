@@ -10,6 +10,7 @@ export const merchants = pgTable('merchants', {
   supportEmail: text('support_email'),
   twilioNumber: text('twilio_number'),
   plan: text('plan').default('free').notNull(),
+  widgetToken: text('widget_token').unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 

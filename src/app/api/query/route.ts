@@ -11,11 +11,23 @@ const anthropic = new Anthropic({
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { query, merchantId, channel = 'widget' } = body
+  const { query, widgetToken, channel = 'widget', customerIdentifier } = body
 
-  if (!query || !merchantId) {
-    return NextResponse.json({ error: 'Missing query or merchantId' }, { status: 400 })
+  if (!query || !widgetToken) {
+    return NextResponse.json({ error: 'Missing query or widgetToken' }, { status: 400 })
   }
+
+  const merchantRow = await db
+    .select()
+    .from(merchants)
+    .where(eq(merchants.widgetToken, widgetToken))
+    .limit(1)
+
+  if (!merchantRow[0]) {
+    return NextResponse.json({ error: 'Invalid widget token' }, { status: 401 })
+  }
+
+  const merchantId = merchantRow[0].id
 
   // Get all active KB entries for this merchant
   const activeEntries = await db
@@ -27,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   if (onlyActive.length === 0) {
     // No active entries — create ticket
-    const ticket = await createTicket(merchantId, query, channel)
+    const ticket = await createTicket(merchantId, query, channel, customerIdentifier)
     return NextResponse.json({
       type: 'ticket',
       message: 'No active KB entries found. A ticket has been created.',
@@ -69,7 +81,7 @@ export async function POST(req: NextRequest) {
 
   if (!bestMatch || bestScore < CONFIDENCE_THRESHOLD) {
     // No good match — create ticket
-    const ticket = await createTicket(merchantId, query, channel)
+    const ticket = await createTicket(merchantId, query, channel, customerIdentifier)
     return NextResponse.json({
       type: 'ticket',
       message: "We couldn't find an answer in our knowledge base. A support ticket has been created and our team will get back to you shortly.",
@@ -110,7 +122,7 @@ Please rephrase this answer in a friendly, conversational tone.`,
   })
 }
 
-async function createTicket(merchantId: string, query: string, channel: string) {
+async function createTicket(merchantId: string, query: string, channel: string, customerIdentifier?: string) {
   const ticket = await db
     .insert(tickets)
     .values({
@@ -118,6 +130,7 @@ async function createTicket(merchantId: string, query: string, channel: string) 
       merchantId,
       rawQuery: query,
       channel,
+      customerIdentifier,
       status: 'submitted',
     })
     .returning()
